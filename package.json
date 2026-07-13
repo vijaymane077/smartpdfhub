@@ -9,6 +9,8 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "adm-zip": "^0.6.0",
+    "archiver": "^8.0.0",
     "formidable": "^3.5.4",
     "framer-motion": "^12.42.2",
     "jspdf": "^4.2.1",

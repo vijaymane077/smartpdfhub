@@ -1,25 +1,49 @@
 "use client";
 
 import { useState } from "react";
+import FileUpload from "../common/FileUpload";
 
 export default function PdfToJpgUpload() {
   const [file, setFile] = useState<File | null>(null);
+  const [quality, setQuality] = useState("high");
   const [loading, setLoading] = useState(false);
 
-  async function convertPdf() {
+  async function handleConvert() {
     if (!file) {
-      alert("Please select a PDF file.");
+      alert("Please select a PDF.");
       return;
     }
 
     setLoading(true);
 
     try {
-      alert(
-        "PDF selected successfully.\n\nIn the next step we'll add the page conversion engine."
-      );
-    } catch (error) {
-      console.error(error);
+      const formData = new FormData();
+
+      formData.append("file", file);
+      formData.append("quality", quality);
+
+      const res = await fetch("/api/pdf-to-jpg", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        throw new Error("Conversion failed");
+      }
+
+      const blob = await res.blob();
+
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "images.zip";
+      a.click();
+
+      URL.revokeObjectURL(url);
+
+    } catch (err) {
+      console.error(err);
       alert("Conversion failed.");
     }
 
@@ -29,44 +53,39 @@ export default function PdfToJpgUpload() {
   return (
     <section className="max-w-4xl mx-auto">
 
-      <div className="border-2 border-dashed border-blue-500 rounded-2xl p-10 text-center bg-white shadow-lg">
+      <div className="bg-white rounded-2xl shadow-lg p-10">
 
-        <h2 className="text-3xl font-bold mb-4">
-          Upload PDF
+        <h2 className="text-3xl font-bold text-center mb-8">
+          PDF to JPG
         </h2>
 
-        <p className="text-gray-500 mb-6">
-          Select the PDF you want to convert into JPG images.
-        </p>
-
-        <input
-          type="file"
-          accept=".pdf"
-          onChange={(e) => {
-            if (e.target.files?.[0]) {
-              setFile(e.target.files[0]);
-            }
-          }}
+        <FileUpload
+          file={file}
+          onChange={setFile}
         />
 
-        {file && (
-          <div className="mt-6 rounded-xl bg-gray-100 p-4">
-            <h3 className="font-semibold">{file.name}</h3>
+        <div className="mt-8">
 
-            <p className="text-gray-500">
-              {(file.size / 1024 / 1024).toFixed(2)} MB
-            </p>
-          </div>
-        )}
+          <label className="font-semibold">
+            Quality
+          </label>
 
-      </div>
+          <select
+            value={quality}
+            onChange={(e) => setQuality(e.target.value)}
+            className="w-full border rounded-xl p-4 mt-2"
+          >
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
 
-      <div className="text-center mt-8">
+        </div>
 
         <button
-          onClick={convertPdf}
+          onClick={handleConvert}
           disabled={loading}
-          className="bg-blue-600 text-white px-8 py-4 rounded-xl hover:bg-blue-700"
+          className="mt-8 w-full bg-blue-600 text-white py-4 rounded-xl"
         >
           {loading ? "Converting..." : "Convert to JPG"}
         </button>
