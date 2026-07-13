@@ -76,6 +76,34 @@ export default function Home() {
             description="Add password protection to your PDF."
             href="/protect-pdf"
           />
+          <ToolCard
+            title="Rotate PDF"
+            description="Rotate PDF pages by 90°, 180° or 270°."
+            href="/rotate-pdf"
+          />
+          <ToolCard
+            title="Delete Pages"
+            description="Delete unwanted pages from your PDF."
+            href="/delete-pages"
+          />
+
+          <ToolCard
+            title="Watermark PDF"
+            description="Add text watermark to every page of your PDF."
+            href="/watermark-pdf"
+          />
+
+          <ToolCard
+            title="Unlock PDF"
+            description="Remove password protection from your PDF."
+            href="/unlock-pdf"
+          />
+
+          <ToolCard
+            title="Extract Pages"
+            description="Extract selected pages into a new PDF."
+            href="/extract-pages"
+          />
 
         </div>
 
